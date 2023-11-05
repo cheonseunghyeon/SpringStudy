@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -20,40 +21,35 @@ public class SpringStudyApplication {
 
 	public static void main(String[] args) {
 
-		ServletWebServerFactory servletWebServerFactory = new TomcatServletWebServerFactory();
-		WebServer webServer = servletWebServerFactory.getWebServer(
-				servletContext -> {
-					servletContext.addServlet("hello", new HttpServlet() {
-						@Override
-						protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-							super.service(req, resp);
+		GenericApplicationContext applicationContext = new GenericApplicationContext();
+		applicationContext.registerBean(HelloController.class);
+		applicationContext.registerBean(SimpleHelloService.class);
+		applicationContext.refresh();
 
-							HelloController helloController = new HelloController();
+		ServletWebServerFactory serverFactory = new TomcatServletWebServerFactory();
+		WebServer webServer = serverFactory.getWebServer(servletContext -> {
 
-							//인증,보안, 공통기능 처리
+			servletContext.addServlet("hello", new HttpServlet() {
+				@Override
+				protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-							if (req.getRequestURL().equals("/hello") && req.getMethod().equals(HttpMethod.GET.name())) {
-								resp.setStatus(HttpStatus.OK.value());
-								resp.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);
-								resp.getWriter().println("hello servlet");
+					if (req.getRequestURI().equals("/hello") && req.getMethod().equals(HttpMethod.GET.name())) {
+						String name = req.getParameter("name");
 
-							} else if (req.getRequestURL().equals("/user")) {
-								String name = req.getParameter("name");
-								String hi = helloController.hello(name);
+						HelloController helloController = applicationContext.getBean(HelloController.class);
+						String ret = helloController.hello(name);
 
-								resp.setStatus(HttpStatus.OK.value());
-								resp.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);
-								resp.getWriter().println(hi);
-							} else {
+						resp.setStatus(HttpStatus.OK.value());
+						resp.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);
+						resp.getWriter().println(ret);
+					} else if (req.getRequestURI().equals("/user")) {
 
-							}
-
-						}
-					}).addMapping("/*");
+					} else {
+						resp.setStatus(HttpStatus.NOT_FOUND.value());
+					}
 				}
-		);
+			}).addMapping("/*");
+		});
 		webServer.start();
-
 	}
-
 }
