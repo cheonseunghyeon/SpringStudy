@@ -1,4 +1,4 @@
-package com.example.spring_study;
+package com.example.spring_study.Config;
 
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;

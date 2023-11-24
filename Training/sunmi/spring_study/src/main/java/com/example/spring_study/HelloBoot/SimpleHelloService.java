@@ -1,4 +1,4 @@
-package com.example.spring_study;
+package com.example.spring_study.HelloBoot;
 
 public class SimpleHelloService implements HelloService {
     @Override
