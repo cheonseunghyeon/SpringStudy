@@ -1,5 +1,7 @@
 package com.example.spring_study.AutoConfig;
 
+import com.example.spring_study.Config.ConditionalMyOnClass;
+import com.example.spring_study.Config.MyAutoConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
