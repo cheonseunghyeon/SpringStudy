@@ -23,17 +23,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Configuration//구성정보를 가지고 있는 클래스이다.
-@ComponentScan
+@MySpringBootApplication
 public class HellobootApplication {
-	@Bean
-	public ServletWebServerFactory servletWebServerFactory(){
-		return new TomcatServletWebServerFactory();
-	}
-	@Bean
-	public DispatcherServlet dispatcherServlet(){
-		return new DispatcherServlet();
-	}
+//	@Bean
+//	public ServletWebServerFactory servletWebServerFactory(){
+//		return new TomcatServletWebServerFactory();
+//	}
+//	@Bean
+//	public DispatcherServlet dispatcherServlet(){
+//		return new DispatcherServlet();
+//	}
 //	@Bean
 //	public HelloController helloController(HelloService helloService){
 //		return new HelloController(helloService);
